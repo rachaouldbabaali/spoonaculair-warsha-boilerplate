@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import RecipeCard from '../components/RecipeCard';
 import { spoonacularApi } from '../services/spoonacularApi';
+import Counter from '../components/Counter';
 
 const HomePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -103,6 +104,7 @@ const HomePage = () => {
   return (
     <div>
       {/* Hero Section */}
+      <Counter />
       <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-8 mb-8 text-white">
         <h2 className="text-3xl font-bold mb-2">Find Your Perfect Recipe</h2>
         <p className="text-emerald-50 mb-6">Discover delicious halal recipes for every occasion</p>
