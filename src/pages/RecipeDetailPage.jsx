@@ -4,13 +4,28 @@ import { ArrowLeft, Clock, Users, Heart, ChefHat, Timer, Flame, BookOpen } from 
 import { spoonacularApi } from "../services/spoonacularApi";
 import { Calendar, Bookmark, Star } from "lucide-react";
 
+// Import Redux hooks and actions
+import { useDispatch, useSelector } from "react-redux";
+import { 
+  addFavorite, 
+  removeFavorite, 
+  selectIsFavorite,
+  selectFavorites 
+} from "../features/favorites/favoritesSlice";
+
 const RecipeDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch(); // Initialize dispatch
+  
+  // Local state
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isFavorite, setIsFavorite] = useState(false);
+  
+  // Get favorites from Redux store
+  const favorites = useSelector(selectFavorites);
+  const isFavorite = useSelector(state => selectIsFavorite(state, id));
 
   // Fetch recipe details on component mount
   useEffect(() => {
@@ -33,19 +48,40 @@ const RecipeDetailPage = () => {
   };
 
   const handleToggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-    // TODO: Implement Redux/Context for favorites
-    console.log(`${isFavorite ? 'Removed from' : 'Added to'} favorites:`, recipe._id);
+    if (!recipe) return;
+    
+    if (isFavorite) {
+      // Remove from favorites
+      dispatch(removeFavorite(id));
+      console.log('Removed from favorites:', recipe._id);
+    } else {
+      // Add to favorites
+      dispatch(addFavorite({
+        _id: recipe._id || recipe.id,
+        id: recipe._id || recipe.id, // Include both for compatibility
+        title: recipe.title,
+        image: recipe.image,
+        readyInMinutes: recipe.readyInMinutes,
+        servings: recipe.servings,
+        cuisines: recipe.cuisines || [],
+        description: recipe.description || recipe.summary || '',
+        difficulty: recipe.difficulty || 'Medium',
+        category: recipe.category || 'Main Course'
+      }));
+      console.log('Added to favorites:', recipe._id);
+    }
   };
 
   const handleAddToMealPlan = () => {
-    // TODO: Implement meal plan functionality
+    if (!recipe) return;
+    
     console.log('Added to meal plan:', recipe._id);
     alert('Added to meal plan!');
   };
 
   const handleSaveToCollection = () => {
-    // TODO: Implement collections functionality
+    if (!recipe) return;
+    
     console.log('Saved to collection:', recipe._id);
     alert('Saved to collection!');
   };
@@ -186,6 +222,7 @@ const RecipeDetailPage = () => {
           <button 
             onClick={handleToggleFavorite}
             className="absolute top-6 right-6 p-3 bg-white/90 backdrop-blur-sm rounded-full shadow-xl hover:bg-white transition-all hover:scale-110"
+            title={isFavorite ? "Remove from favorites" : "Add to favorites"}
           >
             <Heart className={`w-6 h-6 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
           </button>
@@ -207,10 +244,19 @@ const RecipeDetailPage = () => {
               <span className="px-3 py-1 bg-amber-50 text-amber-700 text-sm font-medium rounded-full">
                 {cuisine}
               </span>
+              {isFavorite && (
+                <span className="inline-flex items-center gap-1 px-3 py-1 bg-red-50 text-red-700 text-sm font-medium rounded-full">
+                  <Heart className="w-4 h-4" />
+                  Favorite
+                </span>
+              )}
             </div>
             
             <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
               {recipe.title}
+              {isFavorite && (
+                <span className="ml-3 text-xl" title="This recipe is in your favorites">⭐</span>
+              )}
             </h1>
             <p className="text-gray-600 text-lg leading-relaxed">
               {recipe.description || recipe.summary || 'A delicious recipe to try at home.'}
@@ -382,6 +428,21 @@ const RecipeDetailPage = () => {
                 Save to Collection
               </button>
             </div>
+            
+            {/* Quick Favorite Button */}
+            <div className="mt-4">
+              <button 
+                onClick={handleToggleFavorite}
+                className={`w-full px-6 py-4 rounded-xl font-medium text-lg transition-colors flex items-center justify-center gap-2 ${
+                  isFavorite 
+                    ? 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
+                }`}
+              >
+                <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500' : ''}`} />
+                {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
+              </button>
+            </div>
           </div>
 
           {/* Author and Rating */}
@@ -423,6 +484,5 @@ const RecipeDetailPage = () => {
     </div>
   );
 };
-
 
 export default RecipeDetailPage;

@@ -1,11 +1,31 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Clock, Users } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addFavorite, removeFavorite, selectIsFavorite } from '../features/favorites/favoritesSlice';
 
 const RecipeCard = ({ recipe }) => {
-  // Use _id for MongoDB or id for compatibility
+  const dispatch = useDispatch();
   const recipeId = recipe._id || recipe.id;
+  const isFavorite = useSelector(state => selectIsFavorite(state, recipeId));
   
+  const handleFavoriteClick = (e) => {
+    e.preventDefault();
+    
+    if (isFavorite) {
+      dispatch(removeFavorite(recipeId));
+    } else {
+      dispatch(addFavorite({
+        _id: recipeId,
+        title: recipe.title,
+        image: recipe.image,
+        readyInMinutes: recipe.readyInMinutes,
+        servings: recipe.servings,
+        cuisines: recipe.cuisines,
+      }));
+    }
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
       <div className="relative h-48">
@@ -15,13 +35,10 @@ const RecipeCard = ({ recipe }) => {
           className="w-full h-full object-cover"
         />
         <button
-          onClick={(e) => {
-            e.preventDefault();
-            console.log('Add to favorites:', recipeId);
-          }}
+          onClick={handleFavoriteClick}
           className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
         >
-          <Heart className="w-5 h-5 text-gray-600" />
+          <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
         </button>
       </div>
 
