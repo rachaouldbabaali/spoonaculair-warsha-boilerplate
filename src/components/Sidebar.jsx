@@ -19,7 +19,7 @@ const Sidebar = () => {
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center gap-2">
           <ChefHat className="w-8 h-8 text-emerald-600" />
-          <h1 className="text-2xl font-bold text-gray-800">Halal Recipes</h1>
+          <h1 className="text-2xl font-bold text-gray-800">My Recipes</h1>
         </div>
       </div>
 
