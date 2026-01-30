@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import counterReducer from '../features/counter/counterSlice';
 import favoritesReducer from '../features/favorites/favoritesSlice';
+import themeReducer from '../features/theme/themeSlice';
 
 // The store = The bank vault that holds all state
 export const store = configureStore({
@@ -8,5 +9,6 @@ export const store = configureStore({
     counter: counterReducer,  // Add your slice here
     // Later we'll add: favorites, mealPlan, etc.
     favorites: favoritesReducer,
+    theme: themeReducer,
   },
 });

@@ -14,12 +14,12 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="w-64 bg-white border-r border-gray-200 h-screen fixed left-0 top-0">
+    <div className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-screen fixed left-0 top-0">
       {/* Logo */}
-      <div className="p-6 border-b border-gray-200">
+      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-2">
-          <ChefHat className="w-8 h-8 text-emerald-600" />
-          <h1 className="text-2xl font-bold text-gray-800">My Recipes</h1>
+          <ChefHat className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">My Recipes</h1>
         </div>
       </div>
 
@@ -35,8 +35,8 @@ const Sidebar = () => {
               className={({ isActive }) =>
                 `w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition-colors ${
                   isActive
-                    ? 'bg-emerald-50 text-emerald-700'
-                    : 'text-gray-600 hover:bg-gray-50'
+                    ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
+                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                 }`
               }
             >
